@@ -1,6 +1,3 @@
-import random
-import pandas as pd
-
 from lexicon.lexicon_ru import LEXICON_RU
 
 
@@ -30,9 +27,3 @@ def get_timetable(user_choice: str) -> str:
         return 'ok_1'
 
 
-# Load the xlsx file
-excel_data = pd.read_excel(f'.data_timetable.demo_timetable.xlsx')
-# Read the values of the file in the dataframe
-data = pd.DataFrame(excel_data, columns=['Sales Date', 'Sales Person', 'Amount'])
-# Print the content
-print("The content of the file is:\n", data)

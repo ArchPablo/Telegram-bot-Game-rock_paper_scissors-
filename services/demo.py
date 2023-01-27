@@ -4,9 +4,7 @@ import math
 
 from openpyxl import load_workbook
 from os.path import join, abspath
-
-ABBREVIATION = {'Архитектура': 'ИАРбд'}
-
+from lexicon.lexicon_ru import ABBREVIATION
 
 class NotAllData(Exception):
     pass
@@ -52,25 +50,41 @@ def get_timetable(sheet, column_group: int) -> dict[str, list]:
     return timetable_week
 
 
-data_path = join('.', 'demo_timetable.xlsx')
-data_path_abs = abspath(data_path)
-
-wb = load_workbook(filename=data_path_abs,  data_only=True)
-wsn = wb.sheetnames
-name_first_sheet = str(wsn[0])
-ws = wb[name_first_sheet]
-
-cells_group = get_cells_group(ws)
-arch_groups = get_courses_group(cells_group, ABBREVIATION['Архитектура'])
-group, col = list(arch_groups[3][0].items())[0]
-
-timetable_arch_group = get_timetable(ws, col)
+# Функция возвращает все ячейки первой страницы
+def get_first_sheet(file_name):
+    data_path = abspath(join('.', file_name))
+    wb = load_workbook(filename=data_path,  data_only=True)
+    wsn = wb.sheetnames
+    name_first_sheet = str(wsn[0])
+    ws = wb[name_first_sheet]
+    wb.close()
+    return ws
 
 
-for i in timetable_arch_group:
-    print(i)
-    print('_____________')
-    for j in timetable_arch_group[i]:
-        print(j)
-wb.close()
+def get_bottom_group_course(directions, course):
+    file = 'demo_timetable.xlsx'
+    ws_1 = get_first_sheet(file)
+    cells_group = get_cells_group(ws_1)
+    directions_groups = get_courses_group(cells_group, directions)
+    group_dict = directions_groups[course]
+    group_list = []
+    for i in range(0, len(group_dict)):
+        name_group, col = list(directions_groups[course][i].items())[0]
+        group_list.append(name_group)
+    return group_list
+
+
+# print(get_bottom_group_course(ABBREVIATION['Строительство'], 3))
+
+# group, col = list(arch_groups[3][0].items())[0]
+#
+# timetable_arch_group = get_timetable(ws, col)
+
+#
+# for i in timetable_arch_group:
+#     print(i)
+#     print('_____________')
+#     for j in timetable_arch_group[i]:
+#         print(j)
+
 

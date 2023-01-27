@@ -7,5 +7,12 @@ LEXICON_RU: dict[str, str] = {'/start': '<b>Привет! Я бот-помощн
                               'bild': 'Строительство',
                               'course_1': '1 курс',
                               'course_2': '2 курс',
+                              'course_3': '3 курс',
+                              'course_4': '4 курс',
+                              'course_5': '5 курс',
                               'other_answer': 'Неизвестная команда'
                               }
+
+ABBREVIATION: dict[str, str] = {'Архитектура': 'ИАРбд',
+                                'Строительство': 'ИСРбд'
+                                }

@@ -3,7 +3,7 @@ from aiogram.types import Message
 from aiogram.dispatcher.filters import Text
 
 from lexicon.lexicon_ru import LEXICON_RU
-from keyboards.keyboards import group, faculty
+from keyboards.keyboards import faculty, direction, course_arch, group
 from services.services import get_timetable
 
 
@@ -19,18 +19,15 @@ async def process_help_command(message: Message):
 
 # Этот хэндлер срабатывает на Инженерную академию
 async def process_engineers(message: Message):
-    await message.answer(text=LEXICON_RU['engineers'], reply_markup=group)
+    await message.answer(text=LEXICON_RU['engineers'], reply_markup=direction)
 
 
-# Этот хэндлер срабатывает на любую из игровых кнопок
-async def process_game_button(message: Message):
-    bot_choice = get_timetable()
-    await message.answer(text=f'{LEXICON_RU["bot_choice"]} - {LEXICON_RU[bot_choice]}')
-    winner = get_winner(message.text, bot_choice)
-    await message.answer(text=LEXICON_RU[winner], reply_markup=yes_no_kb)
+async def process_direction_arch(message: Message):
+    await message.answer(text=LEXICON_RU['arch'], reply_markup=course_arch)
 
 
-async def get_time_tabl
+async def process_group(message: Message):
+    await message.answer(text='3', reply_markup=group)
 
 
 # Функция для регистрации хэндлеров в диспетчере. Вызывается в исполняемом файле bot.py
@@ -38,3 +35,5 @@ def register_user_handlers(dp: Dispatcher):
     dp.register_message_handler(process_start_command, commands='start')
     dp.register_message_handler(process_help_command, commands='help')
     dp.register_message_handler(process_engineers, text=LEXICON_RU['engineers'])
+    dp.register_message_handler(process_direction_arch, text=LEXICON_RU['arch'])
+    dp.register_message_handler(process_group, text=LEXICON_RU['course_3'])
