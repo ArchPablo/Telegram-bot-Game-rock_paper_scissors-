@@ -2,7 +2,7 @@ import datetime
 import re
 import math
 
-from openpyxl import load_workbook, Workbook
+from openpyxl import load_workbook
 from os.path import join, abspath
 
 ABBREVIATION = {'Архитектура': 'ИАРбд'}
@@ -27,26 +27,28 @@ def get_cells_group(worksheet):
     return cells
 
 
-def get_courses_group(cells, index_group):
+# Возвращает словарь с курсами внутри которых отсортированы группы с указанием столбца
+def get_courses_group(cells, index_group) -> dict[int, list[dict[str, int]]]:
     courses = {1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: []}
-    for group in cells:
-        group = group.value
+    for cell in cells:
+        group = cell.value
         if re.match(fr'{index_group}', group):
             course_group = get_course_number(group)
-            courses[course_group].append(group)
+            courses[course_group].append(dict({group: cell.column}))
     return courses
 
 
-def get_timetable(sheet, column_group):
+# Функция по заданной колонке группы выдает расписание на неделю
+def get_timetable(sheet, column_group: int) -> dict[str, list]:
     timetable_week = {'Понедельник': [], 'Вторник': [], 'Среда': [],
                       'Четверг': [], 'Пятница': [], 'Суббота': []}
     time_table = [cell.value for cell in next(
         sheet.iter_cols(min_row=6, min_col=column_group, max_row=sheet.max_row, max_col=column_group))]
-    day = 0
+    lessons_count = 0
     for timetable_day in timetable_week:
-        for lesson in range(day, day+8):
+        for lesson in range(lessons_count, lessons_count+8):
             timetable_week[timetable_day].append(time_table[lesson])
-        day += 8
+        lessons_count += 8
     return timetable_week
 
 
@@ -57,23 +59,18 @@ wb = load_workbook(filename=data_path_abs,  data_only=True)
 wsn = wb.sheetnames
 name_first_sheet = str(wsn[0])
 ws = wb[name_first_sheet]
+
 cells_group = get_cells_group(ws)
 arch_groups = get_courses_group(cells_group, ABBREVIATION['Архитектура'])
+group, col = list(arch_groups[3][0].items())[0]
+
+timetable_arch_group = get_timetable(ws, col)
 
 
-
-
-
-
-    # for item in time_table:
-
-tt = get_timetable(ws, 5)
-print(tt)
-for i in tt:
-    print(i, end=f'________\n')
-    for j in tt[i]:
+for i in timetable_arch_group:
+    print(i)
+    print('_____________')
+    for j in timetable_arch_group[i]:
         print(j)
 wb.close()
-# cail = arch_groups[3][0]
-# print(type(cail))
 
