@@ -6,6 +6,7 @@ from aiogram import Bot, Dispatcher
 from config_data.config import Config, load_config
 from handlers.user_handlers import register_user_handlers
 from handlers.other_handlers import register_other_handlers
+from keyboards.menu_button import set_main_menu
 
 
 # Инициализируем логгер
@@ -37,6 +38,7 @@ async def main():
     dp: Dispatcher = Dispatcher(bot)
 
     # Регистрируем все хэндлеры
+    await set_main_menu(dp)
     register_all_handlers(dp)
 
     # Запускаем polling
